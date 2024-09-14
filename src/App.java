@@ -25,26 +25,45 @@ public class App {
 
                 String chosenService;
                 Scanner scannerObject = new Scanner(System.in);
-                String serviceNameQuery = "SELECT name FROM services WHERE service_id = " + scannerObject.nextLine();
-                
+                String chosenServiceID = scannerObject.nextLine();
+                String serviceNameQuery = "SELECT name FROM services WHERE service_id = " + chosenServiceID;
+
                 try (ResultSet chosenServiceResultSet = statement.executeQuery(serviceNameQuery))
                 {
                     chosenServiceResultSet.next();
                     chosenService = chosenServiceResultSet.getString("name");
                     System.out.println(chosenService);
 
-                } catch (SQLSyntaxErrorException e) {
+                } catch (Exception e) {
                     System.out.println("Invalid Service number.");
                     continue;
                 }
-                
-                // TODO: Book appointment
 
-                scannerObject.close();
-                
+                System.out.println("\nWhat's your phone number?");
+                String phone = scannerObject.nextLine();
+                String customerName = "";
+                String selectCustomer = "SELECT name FROM customers WHERE phone = " + phone;
+
+                try (ResultSet customerNameResultSet = statement.executeQuery(selectCustomer)) {
+                    
+                    customerNameResultSet.next();
+                    customerName = customerNameResultSet.getString("name");
+                    System.out.println("Welcome back, " + customerName);
+
+                } catch (SQLException e) {
+                    System.out.println("\nWhat's your name?");
+                    customerName = scannerObject.nextLine();
+                    String addCustomer = "INSERT INTO customers (phone,name) VALUES ('" + phone + "', '" + customerName + "')";
+                    statement.executeUpdate(addCustomer);
+                }
+
+                break;
+
             } catch (SQLException e) {
                 e.printStackTrace();
+                break;
             }
         }
+
     }
 }
