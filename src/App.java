@@ -75,6 +75,8 @@ public class App {
 
                 System.out.println("\nI have put you down for a " + chosenService + " at " + time + ", " + customerName);
 
+                scannerObject.close();
+
             } catch (SQLException e) {
                 e.printStackTrace();
             }
